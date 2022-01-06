@@ -1,31 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import {
   handleInputChange,
   handleAmountInputChange,
   handleSubmit,
   handleClearInput,
-  handleEdit,
-  handleChangeInput,
+  handleSaveNewEdit,
 } from "../Actions/homeAction";
 
-const input = {
-  textEdit: false,
-};
-
 const Home = (props) => {
-  const handleTextChange = (e) => {
-    props.handleInputChange(e.target.value);
-  };
-
-  const handleAmountChange = (e) => {
-    props.handleAmountInputChange(e.target.value);
-  };
-  const handleClick = () => {
-    props.handleSubmit(props.expense, props.items, props.amount);
-    props.handleClearInput();
-  };
-  console.log(props.expense, "list");
+  const [selectedId, setSelectId] = useState(-1);
+  const [selectedIdName, setSelectIdName] = useState("");
+  const [selectedIdAmount, setSelectIdAmount] = useState();
 
   const total = (data) => {
     let sum = 0;
@@ -37,12 +23,49 @@ const Home = (props) => {
   };
   const output = total(props.expense);
 
-  const handleEdit = ({ id }) => {
-    const findTodo = props.expense.find((todo) => todo.id === id);
-    console.log(findTodo, "find todo");
-    props.handleChangeInput(findTodo);
+  const handleTextChange = (e) => {
+    props.handleInputChange(e.target.value);
+  };
 
-    // props.handleEdit();
+  const handleAmountChange = (e) => {
+    props.handleAmountInputChange(e.target.value);
+  };
+  const handleClick = () => {
+    props.handleSubmit(props.expense, props.items, props.amount);
+    props.handleClearInput();
+    // props.updateTodo(props.items, props.editTodo.id, props.expense);
+  };
+  console.log(props.expense, "list");
+
+  const handleEdit = (item, id) => {
+    setSelectId(id);
+    setSelectIdName(item.names);
+    setSelectIdAmount(item.amount);
+    console.log(selectedId, "selected id");
+    // props.handleSelectedItem(id);
+
+    //  props.handleSelectInputField(setSelectIdName, id, props.items);
+  };
+  console.log(props.selectedId, "edit todo");
+
+  const handleSelectedInputChange = (e) => {
+    setSelectIdName(e.target.value);
+    console.log(selectedIdName, "slectedidname");
+  };
+  const handleSelectedAmountChange = (e) => {
+    setSelectIdAmount(e.target.value);
+    console.log(selectedIdAmount, "amount selected id");
+  };
+
+  const handleNewEdit = () => {
+    setSelectIdAmount();
+    setSelectId(-1);
+    props.handleSaveNewEdit(
+      props.expense,
+      selectedId,
+      selectedIdName,
+      selectedIdAmount
+    );
   };
 
   return (
@@ -66,36 +89,50 @@ const Home = (props) => {
           }}
         >
           <h2>Expenses</h2>
-          {!input.textEdit ? (
-            <div>
-              {props.expense.map((item) => (
-                <div>
-                  <li
-                    key={item.id}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      marginBottom: "10px",
-                    }}
+
+          <div>
+            {props.expense.map((item, index) => (
+              <div>
+                <li
+                  key={item.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {selectedId === index ? (
+                    <input
+                      type='text'
+                      value={selectedIdName}
+                      onChange={(e) => handleSelectedInputChange(e)}
+                    />
+                  ) : (
+                    <div>{item.names}</div>
+                  )}
+
+                  <div>
+                    amount:
+                    <input
+                      type='number'
+                      value={item.amount}
+                      onChange={(e) => handleSelectedAmountChange(e)}
+                    />
+                  </div>
+
+                  <button
+                    onClick={
+                      index !== selectedId
+                        ? () => handleEdit(item, index)
+                        : () => handleNewEdit()
+                    }
                   >
-                    <div>name:{item.names}</div>
-                    <div>amount:{item.amount}</div>
-                    <button onClick={() => handleEdit(item)}>Edit</button>
-                  </li>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div>
-              {props.expense.map((item) => (
-                <input
-                  type='text'
-                  value={item.names}
-                  onChange={(e) => e.preventDefault}
-                />
-              ))}
-            </div>
-          )}
+                    {index === selectedId ? "Save" : "Edit"}
+                  </button>
+                </li>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div
@@ -127,14 +164,13 @@ const Home = (props) => {
 };
 
 function mapStateToProps({ HomeReducer }) {
-  const { expense, items, amount, text } = HomeReducer;
-  console.log(expense, "expense");
-  console.log(items, "items");
+  const { expense, items, amount, selectedId } = HomeReducer;
+
   return {
     expense,
     items,
     amount,
-    text,
+    selectedId,
   };
 }
 
@@ -143,6 +179,5 @@ export default connect(mapStateToProps, {
   handleAmountInputChange,
   handleSubmit,
   handleClearInput,
-  handleEdit,
-  handleChangeInput,
+  handleSaveNewEdit,
 })(Home);
