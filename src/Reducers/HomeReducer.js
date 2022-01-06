@@ -1,7 +1,11 @@
 const INITIAL_STATE = {
-  expense: [],
+  expense: [
+    { names: "book", amount: 290 },
+    { names: "pen", amount: 10 },
+  ],
   items: "",
   amount: 0,
+  selectedId: null,
 };
 
 const HomeReducer = (state = INITIAL_STATE, action) => {
@@ -23,17 +27,17 @@ const HomeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         expense: [...action.payload],
       };
-    case "edit":
+    case "edit-todo":
       return {
         ...state,
-        text: state.expense[action.payload],
+        selectedId: action.payload,
       };
-    case "addtext":
+    case "save-new-edit":
       return {
         ...state,
-        text: action.payload,
+        expense: [...action.payload],
       };
-    case "clear_input":
+    case "clear-input":
       return {
         ...state,
         items: "",
