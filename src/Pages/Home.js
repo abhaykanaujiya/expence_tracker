@@ -7,6 +7,7 @@ import {
   handleClearInput,
   handleSaveNewEdit,
 } from "../Actions/homeAction";
+import "./home.css";
 
 const Home = (props) => {
   const [selectedId, setSelectId] = useState(-1);
@@ -70,8 +71,8 @@ const Home = (props) => {
 
   return (
     <div>
-      <div className='inner' style={{ display: "flex" }}>
-        <div style={{ border: "2px solid", width: "200px", height: "200px" }}>
+      <div className='inner'>
+        <div className='inner-child'>
           <h2>Total Expense</h2>
           <h3>
             <i>Rs-</i>
@@ -79,48 +80,37 @@ const Home = (props) => {
           </h3>
         </div>
         <br />
-        <div
-          style={{
-            border: "2px solid",
-            width: "40vw",
-            height: "200px",
-            overflow: "scroll",
-            display: "",
-          }}
-        >
+        <div className='expense-body'>
           <h2>Expenses</h2>
 
           <div>
             {props.expense.map((item, index) => (
               <div>
-                <li
-                  key={item.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {selectedId === index ? (
-                    <input
-                      type='text'
-                      value={selectedIdName}
-                      onChange={(e) => handleSelectedInputChange(e)}
-                    />
-                  ) : (
-                    <div>{item.names}</div>
-                  )}
-
+                <li className='li' key={item.id}>
                   <div>
-                    amount:
-                    <input
-                      type='number'
-                      value={item.amount}
-                      onChange={(e) => handleSelectedAmountChange(e)}
-                    />
+                    {selectedId === index ? (
+                      <input
+                        type='text'
+                        value={selectedIdName}
+                        onChange={(e) => handleSelectedInputChange(e)}
+                      />
+                    ) : (
+                      <div>{item.names}</div>
+                    )}
                   </div>
-
+                  <div>
+                    {selectedId === index ? (
+                      <input
+                        type='number'
+                        value={selectedIdAmount}
+                        onChange={(e) => handleSelectedAmountChange(e)}
+                      />
+                    ) : (
+                      <div>{item.amount}</div>
+                    )}
+                  </div>
                   <button
+                    className='edit-button'
                     onClick={
                       index !== selectedId
                         ? () => handleEdit(item, index)
@@ -135,14 +125,7 @@ const Home = (props) => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexFlow: "column",
-          width: "61vw",
-          marginTop: "10px",
-        }}
-      >
+      <div className='new-input-text'>
         <input
           type='text'
           value={props.items}
