@@ -1,0 +1,28 @@
+.inner {
+  display: flex;
+  color: aquamarine;
+}
+.inner-child {
+  border: 2px solid gray;
+  width: "200px";
+  height: "200px";
+}
+.expense-body {
+  border: 2px solid rgb(17, 16, 16);
+  width: 45vw;
+  height: 20vw;
+  overflow: scroll;
+}
+.li {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+.new-input-text {
+  display: flex;
+  flex-flow: column;
+  width: 60vw;
+  margin-top: 10px;
+}
+.edit-button {
+}
